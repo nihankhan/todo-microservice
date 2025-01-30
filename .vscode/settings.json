@@ -1,0 +1,7 @@
+{
+"go.gopath": "/home/tars/go",
+"go.useLanguageServer": true,
+"go.env": {
+  "GO111MODULE": "on",
+  "GOPATH": "/home/tars/go"
+}

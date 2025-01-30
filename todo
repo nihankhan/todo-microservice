@@ -1,0 +1,34 @@
+todo-microservices/
+├── api-gateway/                        # API Gateway - Single entry point for clients
+│   ├── go.mod                          # Go module for API Gateway
+│   ├── main.go                         # Main entry point for API Gateway (HTTP server setup)
+│   ├── handlers/                       # API Gateway Handlers for REST routes
+│   │   ├── user_handlers.go            # REST to gRPC mapping for User
+│   │   ├── todo_handlers.go            # REST to gRPC mapping for Todo
+│   ├── middleware/                     # Middleware for common tasks (authentication, logging, etc.)
+│   │   ├── auth_middleware.go         # Authentication middleware (e.g., JWT)
+│   │   ├── logging_middleware.go      # Logging middleware for incoming requests
+│   ├── grpc/                           # gRPC Client setup and service interaction
+│   │   ├── user_client.go              # gRPC client for User service
+│   │   ├── todo_client.go              # gRPC client for Todo service
+│   ├── Dockerfile                      # Dockerfile for API Gateway deployment
+│   └── README.md                       # Documentation for API Gateway
+│
+├── services/                           # Microservices for application logic
+│   ├── user/                           # User Service (gRPC)
+│   │   ├── proto/                      # gRPC Protobuf definitions for User service
+│   │   │   └── user.proto              # gRPC definitions for User service
+│   │   ├── service.go                  # User service business logic
+│   │   ├── server.go                   # gRPC server setup for User service
+│   │   ├── handler.go                  # gRPC handlers for User service (e.g., GetUser, CreateUser)
+│   │   └── Dockerfile                  # Dockerfile for User service deployment
+│   ├── todo/                           # Todo Service (gRPC)
+│   │   ├── proto/                      # gRPC Protobuf definitions for Todo service
+│   │   │   └── todo.proto              # gRPC definitions for Todo service
+│   │   ├── service.go                  # Todo service business logic
+│   │   ├── server.go                   # gRPC server setup for Todo service
+│   │   ├── handler.go                  # gRPC handlers for Todo service (e.g., CreateTodo, GetTodo)
+│   │   └── Dockerfile                  # Dockerfile for Todo service deployment
+│   └── README.md                       # Documentation for each service
+│
+└── README.md                           # Project documentation (overview, setup instructions)

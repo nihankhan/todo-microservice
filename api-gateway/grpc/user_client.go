@@ -35,8 +35,8 @@ func (c *UserServiceClient) GetUserByID(ctx context.Context, userID string) (*pr
 	return c.client.GetUser(ctx, r)
 }
 
-func (c *UserServiceClient) Register(ctx context.Context, user *proto.CreateUserRequest) (*proto.CreateUserResponse, error) {
-	resp, err := c.client.CreateUser(ctx, user)
+func (c *UserServiceClient) Register(ctx context.Context, user *proto.RegisterRequest) (*proto.RegisterResponse, error) {
+	resp, err := c.client.Register(ctx, user)
 	if err != nil {
 		return nil, fmt.Errorf("could not create user: %w", err)
 	}

@@ -37,7 +37,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := &proto.CreateUserRequest{
+	user := &proto.RegisterRequest{
 		Name:     r.FormValue("name"),
 		Username: r.FormValue("username"),
 		Email:    r.FormValue("email"),

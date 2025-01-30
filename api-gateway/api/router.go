@@ -11,11 +11,11 @@ import (
 func NewRouter() http.Handler {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/register", handlers.RegisterUser)
-	router.HandleFunc("/login", handlers.LoginUser)
+	router.HandleFunc("/register", handlers.Register).Methods("POST")
+	router.HandleFunc("/login", handlers.Login)
 
 	router.HandleFunc("/users/{id}", handlers.GetUser).Methods("GET")
-	router.HandleFunc("/create", handlers.CreateUser).Methods("POST")
+	// router.HandleFunc("/create", handlers.CreateUser).Methods("POST")
 	router.HandleFunc("/users/{id}", handlers.UpdateUser).Methods("PUT")
 	router.HandleFunc("/users/{id}", handlers.DeleteUser).Methods("DELETE")
 

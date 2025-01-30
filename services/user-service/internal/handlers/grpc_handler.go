@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"api-gateway/proto"
 	"context"
 	"fmt"
-	"user/internal/service"
+
+	"user-service/internal/service"
+	"user-service/proto"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -21,6 +22,36 @@ func NewGrpcHandler(service *service.UserService) *GrpcHandler {
 	}
 }
 
+func (h *GrpcHandler) Register(ctx context.Context, r *proto.RegisterRequest) (*proto.RegisterResponse, error) {
+	fmt.Println("create request")
+
+	user, err := h.s.CreateUser(r.Name, r.Username, r.Email, r.Password)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Error creating user: %v", err)
+	}
+
+	return &proto.RegisterResponse{
+		User: &proto.User{
+			Id:       user.ID,
+			Name:     user.Name,
+			Username: user.Username,
+			Email:    user.Email,
+			Password: user.Password,
+			// ProfileImage: user.ProfileImage,
+		},
+	}, nil
+}
+
+func (h *GrpcHandler) Login(ctx context.Context, r *proto.LoginRequest) (*proto.LoginResponse, error) {
+	token, err := h.s.Login(r.Email, r.Password)
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "Error logging in: %v", err)
+	}
+
+	return &proto.LoginResponse{
+		Token: token,
+	}, nil
+}
 
 func (h *GrpcHandler) GetUser(ctx context.Context, r *proto.UserRequest) (*proto.UserResponse, error) {
 	fmt.Println("get request")
@@ -31,26 +62,6 @@ func (h *GrpcHandler) GetUser(ctx context.Context, r *proto.UserRequest) (*proto
 	}
 
 	return &proto.UserResponse{
-		User: &proto.User{
-			Id:           user.ID,
-			Name:         user.Name,
-			Username:     user.Username,
-			Email:        user.Email,
-			Password:     user.Password,
-			ProfileImage: user.ProfileImage,
-		},
-	}, nil
-}
-
-func (h *GrpcHandler) CreateUser(ctx context.Context, r *proto.CreateUserRequest) (*proto.CreateUserResponse, error) {
-	fmt.Println("create request")
-
-	user, err := h.s.CreateUser(r.Name, r.Username, r.Email, r.Password)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Error creating user: %v", err)
-	}
-
-	return &proto.CreateUserResponse{
 		User: &proto.User{
 			Id:           user.ID,
 			Name:         user.Name,

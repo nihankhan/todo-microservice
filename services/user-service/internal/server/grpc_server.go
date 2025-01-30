@@ -1,19 +1,23 @@
 package server
 
 import (
-	"api-gateway/proto"
 	"log"
 	"net"
-	"user/internal/handlers"
-	"user/internal/repository"
-	"user/internal/service"
+	"time"
+	"user-service/internal/handlers"
+	"user-service/internal/repository"
+	"user-service/internal/service"
+	"user-service/proto"
 
 	"google.golang.org/grpc"
 )
 
 func StartGrpcServer() {
+	jwtSecret := "todo-microservice-nullbyte"
+	tokenExpiry := time.Hour * 24
+
 	repo := repository.NewInMUserRepo()
-	userService := service.NewUserService(repo)
+	userService := service.NewUserService(repo, jwtSecret, tokenExpiry)
 	grpcHandler := handlers.NewGrpcHandler(userService)
 
 	lis, err := net.Listen("tcp", ":50052")

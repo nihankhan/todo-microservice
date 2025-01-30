@@ -1,6 +1,6 @@
 package main
 
-import "user/internal/server"
+import "user-service/internal/server"
 
 func main() {
 	server.StartGrpcServer()

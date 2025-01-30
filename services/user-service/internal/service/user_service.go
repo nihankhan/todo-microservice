@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"time"
-	"user/internal/domain"
-	"user/internal/repository"
+	"user-service/internal/domain"
+	"user-service/internal/repository"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -54,12 +54,16 @@ func (s *UserService) GetUser(userID string) (*domain.User, error) {
 }
 
 func (s *UserService) CreateUser(name, username, email, password string) (*domain.User, error) {
+	hashedPass, err := hashPassword(password)
+	if err != nil {
+		return nil, fmt.Errorf("could not hash password: %w", err)
+	}
 	user := &domain.User{
 		ID:           generateUserID(),
 		Name:         name,
 		Username:     username,
 		Email:        email,
-		Password:     password,
+		Password:     hashedPass,
 		ProfileImage: "",
 	}
 

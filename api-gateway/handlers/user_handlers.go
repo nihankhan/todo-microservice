@@ -30,7 +30,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func Register(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -44,7 +44,29 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		Password: r.FormValue("password"),
 	}
 
-	resp, err := uClient.CreateUser(context.Background(), user)
+	resp, err := uClient.Register(context.Background(), user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user := &proto.LoginRequest{
+		Email:    r.FormValue("email"),
+		Password: r.FormValue("password"),
+	}
+
+	resp, err := uClient.Login(context.Background(), user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

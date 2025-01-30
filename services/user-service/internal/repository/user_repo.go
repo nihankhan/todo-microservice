@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	"user/internal/domain"
+	"user-service/internal/domain"
 )
 
 type UserRepository interface {

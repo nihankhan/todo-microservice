@@ -64,3 +64,21 @@ func (c *TodoClient) DeleteTodo(ctx context.Context, todoID string) (*proto.Dele
 
 	return c.client.DeleteTodo(ctx, r)
 }
+
+func (c *TodoClient) GetAllTodos(ctx context.Context) ([]*proto.Todo, error) {
+	r := &proto.GetAllTodosRequest{}
+	resp, err := c.client.GetAllTodos(ctx, r)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Todo, nil
+}
+
+func (c *TodoClient) MarkAsDone(ctx context.Context, todoID string) (*proto.MarkResponse, error) {
+	r := &proto.MarkRequest{
+		TodoId: todoID,
+	}
+
+	return c.client.MarkAsDone(ctx, r)
+}

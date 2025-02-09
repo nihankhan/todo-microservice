@@ -1,14 +1,15 @@
 package server
 
 import (
-	"api-gateway/proto"
 	"log"
 	"net"
 	"todo/internal/handlers"
 	"todo/internal/repository"
 	"todo/internal/service"
+	"todo/proto"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func StartTodoServer() {
@@ -22,6 +23,8 @@ func StartTodoServer() {
 	}
 
 	grpcServer := grpc.NewServer()
+
+	reflection.Register(grpcServer)
 
 	proto.RegisterTodoServiceServer(grpcServer, grpcHandler)
 

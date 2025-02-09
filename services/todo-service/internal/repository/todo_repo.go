@@ -10,6 +10,8 @@ type TodoRepository interface {
 	CreatedTodo(todo *domain.Todo) (*domain.Todo, error)
 	UpdateTodo(todo *domain.Todo) (*domain.Todo, error)
 	DeleteTodo(ID string) error
+	GetAllTodos() ([]domain.Todo, error)
+	MarkAsDone(ID string) (bool, error)
 }
 
 type InMTodoRepo struct {
@@ -47,4 +49,25 @@ func (repo *InMTodoRepo) DeleteTodo(ID string) error {
 	delete(repo.todo, ID)
 
 	return nil
+}
+
+func (repo *InMTodoRepo) GetAllTodos() ([]domain.Todo, error) {
+	todos := make([]domain.Todo, 0, len(repo.todo))
+
+	for _, todo := range repo.todo {
+		todos = append(todos, *todo)
+	}
+
+	return todos, nil
+}
+
+func (repo *InMTodoRepo) MarkAsDone(ID string) (bool, error) {
+	todo, err := repo.GetTodoByID(ID)
+	if err != nil {
+		return false, err
+	}
+
+	todo.Completed = true
+
+	return true, nil
 }

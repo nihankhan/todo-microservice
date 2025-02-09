@@ -26,11 +26,12 @@ func (s *TodoService) GetTodoByID(ID string) (*domain.Todo, error) {
 	return todo, nil
 }
 
-func (s *TodoService) CreatedTodo(title, description string) (*domain.Todo, error) {
+func (s *TodoService) CreatedTodo(title, description string, completed bool) (*domain.Todo, error) {
 	todo := &domain.Todo{
 		ID:          generateID(),
 		Title:       title,
 		Description: description,
+		Completed:   completed,
 	}
 
 	todo, err := s.repo.CreatedTodo(todo)
@@ -64,6 +65,19 @@ func (s *TodoService) DeleteTodo(ID string) error {
 	}
 
 	return nil
+}
+
+func (s *TodoService) GetAllTodos() ([]domain.Todo, error) {
+	return s.repo.GetAllTodos()
+}
+
+func (s *TodoService) MarkAsDone(ID string) (bool, error) {
+	done, err := s.repo.MarkAsDone(ID)
+	if err != nil {
+		return false, fmt.Errorf("error marking as done: %w", err)
+	}
+
+	return done, nil
 }
 
 func generateID() string {

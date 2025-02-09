@@ -20,9 +20,12 @@ func NewRouter() http.Handler {
 	router.HandleFunc("/users/{id}", handlers.DeleteUser).Methods("DELETE")
 
 	router.HandleFunc("/todos/{id}", handlers.GetTodo).Methods("GET")
-	router.HandleFunc("/todos", handlers.CreateTodo).Methods("POST")
+	router.HandleFunc("/todo", handlers.CreateTodo).Methods("POST")
 	router.HandleFunc("/todos/{id}", handlers.UpdateTodo).Methods("PUT")
 	router.HandleFunc("/todos/{id}", handlers.DeleteTodo).Methods("DELETE")
+	router.HandleFunc("/mark/{id}", handlers.MarkAsDone).Methods("PUT")
+
+	router.HandleFunc("/all", handlers.GetAllTodos)
 
 	router.HandleFunc("/welcome", welcome)
 

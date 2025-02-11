@@ -106,3 +106,36 @@ func (h *GrpcHandler) DeleteUser(ctx context.Context, r *proto.DeleteUserRequest
 		Message: "User deleted successfully",
 	}, nil
 }
+
+func (h *GrpcHandler) Logout(ctx context.Context, r *proto.LogoutRequest) (*proto.LogoutResponse, error) {
+	msg, err := h.s.Logout(r.GetToken())
+	if err != nil {
+		return &proto.LogoutResponse{
+			Success: false,
+			Message: err.Error(),
+		}, nil
+	}
+
+	return &proto.LogoutResponse{
+		Success: true,
+		Message: msg,
+	}, nil
+}
+
+func (h *GrpcHandler) ValidateToken(ctx context.Context, r *proto.ValidateTokenRequest) (*proto.ValidateTokenResponse, error) {
+	user, err := h.s.ValidateToken(r.Token)
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "Invalid token: %v", err)
+	}
+
+	return &proto.ValidateTokenResponse{
+		IsValid: true,
+		User: &proto.User{
+			Id:           user.ID,
+			Name:         user.Name,
+			Username:     user.Username,
+			Email:        user.Email,
+			ProfileImage: user.ProfileImage,
+		},
+	}, nil
+}

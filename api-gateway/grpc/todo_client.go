@@ -57,16 +57,19 @@ func (c *TodoClient) UpdateTodo(ctx context.Context, todo *proto.UpdateTodoReque
 	return resp, nil
 }
 
-func (c *TodoClient) DeleteTodo(ctx context.Context, todoID string) (*proto.DeleteTodoResponse, error) {
+func (c *TodoClient) DeleteTodo(ctx context.Context, todoID, userID string) (*proto.DeleteTodoResponse, error) {
 	r := &proto.DeleteTodoRequest{
 		TodoId: todoID,
+		UserId: userID,
 	}
 
 	return c.client.DeleteTodo(ctx, r)
 }
 
-func (c *TodoClient) GetAllTodos(ctx context.Context) ([]*proto.Todo, error) {
-	r := &proto.GetAllTodosRequest{}
+func (c *TodoClient) GetAllTodos(ctx context.Context, userID string) ([]*proto.Todo, error) {
+	r := &proto.GetAllTodosRequest{
+		UserId: userID,
+	}
 	resp, err := c.client.GetAllTodos(ctx, r)
 	if err != nil {
 		return nil, err
@@ -75,9 +78,10 @@ func (c *TodoClient) GetAllTodos(ctx context.Context) ([]*proto.Todo, error) {
 	return resp.Todo, nil
 }
 
-func (c *TodoClient) MarkAsDone(ctx context.Context, todoID string) (*proto.MarkResponse, error) {
+func (c *TodoClient) MarkAsDone(ctx context.Context, todoID, userID string) (*proto.MarkResponse, error) {
 	r := &proto.MarkRequest{
 		TodoId: todoID,
+		UserId: userID,
 	}
 
 	return c.client.MarkAsDone(ctx, r)

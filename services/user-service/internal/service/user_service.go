@@ -18,6 +18,8 @@ type UserService struct {
 	tokenExpiry time.Duration
 }
 
+var activeTokens = map[string]bool{}
+
 func NewUserService(repo repository.UserRepository, jwtSecret string, tokenExpiry time.Duration) *UserService {
 	return &UserService{
 		repo:        repo,
@@ -41,7 +43,18 @@ func (s *UserService) Login(email, password string) (string, error) {
 		return "", fmt.Errorf("could not generate token %w", err)
 	}
 
+	activeTokens[token] = true
+
 	return token, nil
+}
+
+func (s *UserService) Logout(token string) (string, error) {
+	err := s.invalidteToken(token)
+	if err != nil {
+		return "", fmt.Errorf("failed to invalidate token: %w", err)
+	}
+
+	return "User Successfully Logged out", nil
 }
 
 func (s *UserService) GetUser(userID string) (*domain.User, error) {
@@ -126,4 +139,40 @@ func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 
 	return err == nil
+}
+
+func (s *UserService) ValidateToken(tokenString string) (*domain.User, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(s.jwtSecret), nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return nil, fmt.Errorf("invalid token")
+	}
+
+	userID, ok := claims["user_id"].(string)
+	if !ok {
+		return nil, fmt.Errorf("invalid token claims")
+	}
+
+	user, err := s.repo.GetUserByID(userID)
+	if err != nil {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return user, nil
+}
+
+func (s *UserService) invalidteToken(toke string) error {
+	if _, exists := activeTokens[toke]; !exists {
+		return fmt.Errorf("token not found")
+	}
+
+	delete(activeTokens, toke)
+
+	return nil
 }

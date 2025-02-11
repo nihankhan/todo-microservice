@@ -10,6 +10,7 @@ import (
 	"user-service/proto"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func StartGrpcServer() {
@@ -26,6 +27,8 @@ func StartGrpcServer() {
 	}
 
 	grpcServer := grpc.NewServer()
+	reflection.Register(grpcServer)
+
 	proto.RegisterUserServiceServer(grpcServer, grpcHandler)
 
 	log.Println("Server is running on port :50052")

@@ -9,6 +9,7 @@ message Todo {
     string title = 2;
     string description = 3;
     optional bool completed = 4;
+    string user_id = 5;
 }
 
 message TodoRequest {
@@ -23,6 +24,7 @@ message CreateTodoRequest {
     string title = 1;
     string description = 2;
     optional bool completed = 3;
+    string user_id = 4;
 }
 
 message CreateTodoResponse {
@@ -34,6 +36,7 @@ message UpdateTodoRequest {
     string title = 2;
     string description = 3;
     optional bool completed = 4;
+    string user_id = 5;
 }
 
 message UpdateTodoResponse {
@@ -42,6 +45,7 @@ message UpdateTodoResponse {
 
 message DeleteTodoRequest {
     string todo_id = 1;
+    string user_id = 2;
 }
 
 message DeleteTodoResponse {
@@ -49,7 +53,9 @@ message DeleteTodoResponse {
     string message = 2;
 }
 
-message GetAllTodosRequest {}
+message GetAllTodosRequest {
+    string user_id = 1;
+}
 
 message GetAllTodosResponse {
     repeated Todo todo = 1;
@@ -57,6 +63,7 @@ message GetAllTodosResponse {
 
 message MarkRequest {
     string todo_id = 1;
+    string user_id = 2;
 }
 
 message MarkResponse {

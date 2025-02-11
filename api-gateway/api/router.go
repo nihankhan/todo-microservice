@@ -2,6 +2,7 @@ package api
 
 import (
 	"api-gateway/handlers"
+	"api-gateway/middleware"
 	"fmt"
 	"net/http"
 
@@ -14,25 +15,26 @@ func NewRouter() http.Handler {
 	router.HandleFunc("/register", handlers.Register).Methods("POST")
 	router.HandleFunc("/login", handlers.Login)
 
-	router.HandleFunc("/users/{id}", handlers.GetUser).Methods("GET")
+	protected := router.PathPrefix("/").Subrouter()
+
+	protected.Use(middleware.AuthMiddleware)
+
+	protected.HandleFunc("/logout", handlers.Logout)
+
+	protected.HandleFunc("/users/{id}", handlers.GetUser).Methods("GET")
 	// router.HandleFunc("/create", handlers.CreateUser).Methods("POST")
-	router.HandleFunc("/users/{id}", handlers.UpdateUser).Methods("PUT")
-	router.HandleFunc("/users/{id}", handlers.DeleteUser).Methods("DELETE")
+	protected.HandleFunc("/users/{id}", handlers.UpdateUser).Methods("PUT")
+	protected.HandleFunc("/users/{id}", handlers.DeleteUser).Methods("DELETE")
 
-	router.HandleFunc("/todos/{id}", handlers.GetTodo).Methods("GET")
-	router.HandleFunc("/todo", handlers.CreateTodo).Methods("POST")
-	router.HandleFunc("/todos/{id}", handlers.UpdateTodo).Methods("PUT")
-	router.HandleFunc("/todos/{id}", handlers.DeleteTodo).Methods("DELETE")
-	router.HandleFunc("/mark/{id}", handlers.MarkAsDone).Methods("PUT")
+	protected.HandleFunc("/todos/{id}", handlers.GetTodo).Methods("GET")
+	protected.HandleFunc("/todo", handlers.CreateTodo).Methods("POST")
+	protected.HandleFunc("/todos/{id}", handlers.UpdateTodo).Methods("PUT")
+	protected.HandleFunc("/todos/{id}", handlers.DeleteTodo).Methods("DELETE")
+	protected.HandleFunc("/mark/{id}", handlers.MarkAsDone).Methods("PUT")
 
-	router.HandleFunc("/all", handlers.GetAllTodos)
+	protected.HandleFunc("/all", handlers.GetAllTodos)
 
 	router.HandleFunc("/welcome", welcome)
-
-	// router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-	// 	fmt.Println(route.GetPathTemplate())
-	// 	return nil
-	// })
 
 	return router
 }

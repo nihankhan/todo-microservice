@@ -53,6 +53,15 @@ func (c *UserServiceClient) Login(ctx context.Context, login *proto.LoginRequest
 	return resp, nil
 }
 
+func (c *UserServiceClient) Logout(ctx context.Context, logout *proto.LogoutRequest) (*proto.LogoutResponse, error) {
+	resp, err := c.client.Logout(ctx, logout)
+	if err != nil {
+		return nil, fmt.Errorf("could not logged out: %w", err)
+	}
+
+	return resp, nil
+}
+
 func (c *UserServiceClient) UpdateUser(ctx context.Context, user *proto.UpdateUserRequest) (*proto.UpdateUserResponse, error) {
 	resp, err := c.client.UpdateUser(ctx, user)
 	if err != nil {
